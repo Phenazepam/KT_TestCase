@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SerialNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEquipmentRequest extends FormRequest
@@ -22,7 +23,9 @@ class StoreEquipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'data.*.type_id' => 'required|numeric',
+            'data.*.serial_number' => ['required'],
+            'data.*.comment' => 'nullable'
         ];
     }
 }

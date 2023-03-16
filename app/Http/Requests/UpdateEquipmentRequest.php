@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SerialNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEquipmentRequest extends FormRequest
@@ -11,7 +12,7 @@ class UpdateEquipmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,11 @@ class UpdateEquipmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        // return[];
         return [
-            //
+            'type_id' => 'required|numeric',
+            'serial_number' => ['required', new SerialNumberRule],
+            'comment' => 'nullable'
         ];
     }
 }

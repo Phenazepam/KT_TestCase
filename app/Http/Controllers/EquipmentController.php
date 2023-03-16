@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Http\Requests\StoreEquipmentRequest;
+use App\Rules\SerialNumberRule;
 use App\Http\Requests\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentResource;
+use Exception;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
@@ -20,13 +24,25 @@ class EquipmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEquipmentRequest $request)
+    public function store(StoreEquipmentRequest $data)
     {
-        $request = [
-            'type_id' => 2,
-            'serial_number' => '11AAAA_2er'
-        ];
-        return Equipment::checkAndSave($request);
+        $response = [];
+        foreach ($data['data'] as $key => $item) {
+            $validator = Validator::make($item, [ 
+                'serial_number' => ['required', new SerialNumberRule]
+            ]);
+            if ($validator->fails()) {
+                $response[]["error"] = $validator->errors();
+            }
+            else {
+                try {
+                    $response[] = new EquipmentResource(Equipment::create($item));
+                } catch (Exception $e) {
+                    $response[]["error"] = $e->getMessage();
+                }
+            }
+        }
+        return response($response);
     }
 
     /**
@@ -42,7 +58,8 @@ class EquipmentController extends Controller
      */
     public function update(UpdateEquipmentRequest $request, Equipment $equipment)
     {
-        //
+        $equipment->update($request->validated());
+        return new EquipmentResource($equipment);
     }
 
     /**

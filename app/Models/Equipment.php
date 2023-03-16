@@ -41,6 +41,11 @@ class Equipment extends Model
         return preg_match($pattern_by_mask, $sn) > 0 ? true : false;
     }
 
+    public static function validateSerialNumber($sn, $equipment_type) {
+        $mask = EquipmentType::findOrFail($equipment_type)->maskSN;
+        return Equipment::checkSerialNumber($sn, $mask);
+    }
+
     public static function checkAndSave($equip){
         $mask = EquipmentType::findOrFail($equip["type_id"])->maskSN;
 
