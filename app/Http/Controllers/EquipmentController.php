@@ -18,7 +18,12 @@ class EquipmentController extends Controller
      */
     public function index()
     {
-        return EquipmentResource::collection(Equipment::paginate());
+        $filter = request()->all();
+        try {
+            return EquipmentResource::collection(Equipment::where($filter)->paginate());
+        } catch (Exception $ex) {
+            return response($ex->getMessage(), 400);
+        }
     }
 
     /**
