@@ -17,7 +17,7 @@ class EquipmentTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'maskSN' => $this->maskSN
+            'serial_mask' => $this->serial_mask
         ];
     }
 }

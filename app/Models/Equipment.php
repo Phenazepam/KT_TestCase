@@ -42,12 +42,12 @@ class Equipment extends Model
     }
 
     public static function validateSerialNumber($sn, $equipment_type) {
-        $mask = EquipmentType::findOrFail($equipment_type)->maskSN;
+        $mask = EquipmentType::findOrFail($equipment_type)->serial_mask;
         return Equipment::checkSerialNumber($sn, $mask);
     }
 
     public static function checkAndSave($equip){
-        $mask = EquipmentType::findOrFail($equip["type_id"])->maskSN;
+        $mask = EquipmentType::findOrFail($equip["type_id"])->serial_mask;
 
         try {
             if(Equipment::checkSerialNumber($equip["serial_number"], $mask)) {

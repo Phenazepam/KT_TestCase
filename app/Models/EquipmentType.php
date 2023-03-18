@@ -12,6 +12,6 @@ class EquipmentType extends Model
 
     protected $fillable = [
         'name',
-        'maskSN',
+        'serial_mask',
     ];
 }
