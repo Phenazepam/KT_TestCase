@@ -46,30 +46,30 @@ class Equipment extends Model
         return Equipment::checkSerialNumber($sn, $mask);
     }
 
-    public static function checkAndSave($equip){
-        $mask = EquipmentType::findOrFail($equip["type_id"])->serial_mask;
+    // public static function checkAndSave($equip){
+    //     $mask = EquipmentType::findOrFail($equip["type_id"])->serial_mask;
 
-        try {
-            if(Equipment::checkSerialNumber($equip["serial_number"], $mask)) {
-                return Equipment::create($equip);
-            }
-            else {
-                $error = [
-                    'error' => 'Ошибка сохранения.',
-                    'description' => 'Серийный номер не соответствует маске.'
-                ];
-                return $error;
-            }
+    //     try {
+    //         if(Equipment::checkSerialNumber($equip["serial_number"], $mask)) {
+    //             return Equipment::create($equip);
+    //         }
+    //         else {
+    //             $error = [
+    //                 'error' => 'Ошибка сохранения.',
+    //                 'description' => 'Серийный номер не соответствует маске.'
+    //             ];
+    //             return $error;
+    //         }
 
-        }
-        catch(Exception $e) {
-            $error = [
-                'error' => 'Ошибка сохранения.',
-                'description' => $e->getMessage()
-            ];
-            return $error;
-        }
-    }
+    //     }
+    //     catch(Exception $e) {
+    //         $error = [
+    //             'error' => 'Ошибка сохранения.',
+    //             'description' => $e->getMessage()
+    //         ];
+    //         return $error;
+    //     }
+    // }
 
 
     public function type(){

@@ -10,6 +10,7 @@ use App\Http\Resources\EquipmentResource;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 
 class EquipmentController extends Controller
 {
@@ -29,25 +30,29 @@ class EquipmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEquipmentRequest $data)
+    public function store(StoreEquipmentRequest $request)
     {
         $response = [];
-        foreach ($data['data'] as $key => $item) {
-            $validator = Validator::make($item, [ 
-                'serial_number' => ['required', new SerialNumberRule]
-            ]);
-            if ($validator->fails()) {
-                $response[]["error"] = $validator->errors();
-            }
-            else {
+        foreach ($request->serial_number as $item) {
+            if (Equipment::validateSerialNumber($item, $request->type_id)) {
+                $equipmentItem = [
+                    'type_id' => $request->type_id,
+                    'serial_number' => $item,
+                    'comment' => $request->comment
+                ];
                 try {
-                    $response[] = new EquipmentResource(Equipment::create($item));
-                } catch (Exception $e) {
-                    $response[]["error"] = $e->getMessage();
+                    $response[$item] = Equipment::create($equipmentItem);
+                } catch (Exception $ex ) {
+                    $response[$item] = new Equipment();
+                    $response[$item]["error"] = $ex->getMessage();
                 }
             }
+            else {
+                $response[$item] = new Equipment();
+                    $response[$item]["error"] = "Серийный номер не соответствует маске.";
+            };
         }
-        return response($response);
+        return EquipmentResource::collection($response);
     }
 
     /**

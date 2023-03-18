@@ -23,9 +23,9 @@ class StoreEquipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data.*.type_id' => 'required|numeric',
-            'data.*.serial_number' => ['required'],
-            'data.*.comment' => 'nullable'
+            'type_id' => 'required|numeric',
+            'serial_number' => 'array',
+            'comment' => 'nullable',
         ];
     }
 }
