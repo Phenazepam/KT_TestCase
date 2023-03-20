@@ -14,4 +14,11 @@ class EquipmentType extends Model
         'name',
         'serial_mask',
     ];
+
+    public static function searchByQ(string $q) {
+        $q = '%'.$q.'%';
+        return EquipmentType::Where('id', 'like', $q)
+                        ->orWhere('name', 'like', $q)
+                        ->orWhere('serial_mask', 'like', $q);
+    }
 }

@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Equipment extends Model
 {
@@ -46,31 +47,13 @@ class Equipment extends Model
         return Equipment::checkSerialNumber($sn, $mask);
     }
 
-    // public static function checkAndSave($equip){
-    //     $mask = EquipmentType::findOrFail($equip["type_id"])->serial_mask;
-
-    //     try {
-    //         if(Equipment::checkSerialNumber($equip["serial_number"], $mask)) {
-    //             return Equipment::create($equip);
-    //         }
-    //         else {
-    //             $error = [
-    //                 'error' => 'Ошибка сохранения.',
-    //                 'description' => 'Серийный номер не соответствует маске.'
-    //             ];
-    //             return $error;
-    //         }
-
-    //     }
-    //     catch(Exception $e) {
-    //         $error = [
-    //             'error' => 'Ошибка сохранения.',
-    //             'description' => $e->getMessage()
-    //         ];
-    //         return $error;
-    //     }
-    // }
-
+    public static function searchByQ(string $q) {
+        $q = '%'.$q.'%';
+        return Equipment::Where('id', 'like', $q)
+                    ->orWhere('type_id', 'like', $q)
+                    ->orWhere('serial_number', 'like', $q)
+                    ->orWhere('comment', 'like', $q);
+    }
 
     public function type(){
         return $this->belongsTo(EquipmentType::class, 'type_id', 'id');

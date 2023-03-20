@@ -19,8 +19,11 @@ class EquipmentController extends Controller
      */
     public function index()
     {
-        $filter = request()->all();
+        if (request('q') != null) {
+            return EquipmentResource::collection(Equipment::searchByQ(request('q'))->paginate());
+        }
         try {
+            $filter = request()->all();
             return EquipmentResource::collection(Equipment::where($filter)->paginate());
         } catch (Exception $ex) {
             return response($ex->getMessage(), 400);
@@ -49,7 +52,7 @@ class EquipmentController extends Controller
             }
             else {
                 $response[$item] = new Equipment();
-                    $response[$item]["error"] = "Серийный номер не соответствует маске.";
+                $response[$item]["error"] = "Серийный номер не соответствует маске.";
             };
         }
         return EquipmentResource::collection($response);

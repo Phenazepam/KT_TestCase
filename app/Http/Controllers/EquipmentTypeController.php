@@ -14,6 +14,9 @@ class EquipmentTypeController extends Controller
      * 
      */
     public function index() {
+        if (request('q') != null) {
+            return EquipmentTypeResource::collection(EquipmentType::searchByQ(request('q'))->paginate());
+        }
         $filter = request()->all();
         try {
             return EquipmentTypeResource::collection(EquipmentType::where($filter)->paginate());
